@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Boundary Café – Closed for the Season</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background-color: #f2ebd9; /* Warm bright cream */
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Lato', sans-serif;
+      color: #3e2723; /* Dark espresso text */
+      padding: 40px 20px;
+    }
+
+    /* SUN MOTES (Replacing Rain) */
+    .rain {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .raindrop {
+      position: absolute;
+      top: -20px;
+      width: 3px;
+      height: 3px !important;
+      border-radius: 50%;
+      background: rgba(200, 160, 100, 0.4);
+      animation: floatDust linear infinite;
+    }
+    @keyframes floatDust {
+      0% { transform: translateY(-5vh) translateX(0); opacity: 0; }
+      20% { opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(105vh) translateX(20px); opacity: 0; }
+    }
+
+    /* HANGING CAFE LAMP (Replacing Street Light) */
+    .street-light {
+      position: fixed;
+      top: 0; right: 120px;
+      width: 2px;
+      height: 35%;
+      background: #4e342e;
+      z-index: 1;
+    }
+    .street-light::after {
+      content: '';
+      position: absolute;
+      bottom: -15px; left: -24px;
+      width: 50px; height: 20px;
+      background: #d4a373;
+      border-radius: 25px 25px 0 0;
+      border: 2px solid #4e342e;
+      border-bottom: none;
+    }
+    .street-light-glow {
+      position: fixed;
+      top: 35%;
+      right: 90px;
+      width: 150px; height: 150px;
+      background: radial-gradient(circle, rgba(255, 223, 137, 0.4) 0%, transparent 60%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* MAIN WRAPPER */
+    .cafe-wrapper {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 780px;
+    }
+
+    /* CAFÉ SIGN */
+    .cafe-sign {
+      text-align: center;
+      margin-bottom: 12px;
+    }
+    .cafe-sign h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      color: #4e342e;
+      letter-spacing: 2px;
+      text-shadow: 2px 2px 0px rgba(255,255,255,0.6);
+    }
+    .cafe-sign p {
+      font-size: 0.85rem;
+      color: #8d6e63;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 4px;
+      font-weight: 700;
+    }
+
+    /* WINDOW FRAME */
+    .window-frame {
+      background: #faf6f0;
+      border: 8px solid #a67c52;
+      border-radius: 8px;
+      padding: 30px;
+      box-shadow:
+        0 20px 40px rgba(100, 60, 30, 0.15),
+        inset 0 0 20px rgba(150, 100, 50, 0.05);
+      position: relative;
+    }
+
+    /* CLOSED SIGN */
+    .closed-sign {
+      text-align: center;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 11;
+    }
+    .closed-sign .sign-tag {
+      display: inline-block;
+      background: #d84315;
+      color: #fffaf0;
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: 1.6rem;
+      padding: 8px 24px;
+      border-radius: 4px;
+      box-shadow: 0 6px 16px rgba(216, 67, 21, 0.2);
+      transform: rotate(-2deg);
+      border: 2px solid #bf360c;
+    }
+    .closed-sign .sign-sub {
+      display: block;
+      font-family: 'Lato', sans-serif;
+      font-style: normal;
+      font-size: 0.75rem;
+      color: #ffd8cc;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    /* CHALKBOARD */
+    .chalkboard {
+      background: #2e4a35;
+      border: 6px solid #8c5a35;
+      border-radius: 6px;
+      padding: 16px 20px;
+      margin-bottom: 28px;
+      text-align: center;
+      position: relative;
+      z-index: 11;
+      box-shadow: inset 0 4px 12px rgba(0,0,0,0.4), 0 4px 10px rgba(0,0,0,0.05);
+    }
+    .chalkboard .chalk-label {
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #a8c6af;
+      margin-bottom: 8px;
+    }
+    .chalkboard .chalk-days {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #f5f2e6;
+      text-shadow: 0 0 4px rgba(255,255,255,0.2);
+    }
+    .chalkboard .chalk-message {
+      font-size: 0.9rem;
+      color: #d1e2d6;
+      margin-top: 6px;
+      font-style: italic;
+    }
+    .chalkboard .chalk-estimate {
+      font-size: 0.72rem;
+      color: #88a88f;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    /* MENU BOARD */
+    .menu-board {
+      background: #fdfaf5;
+      border: 2px solid #e0cbb0;
+      border-radius: 6px;
+      padding: 20px;
+      margin-bottom: 28px;
+      position: relative;
+      z-index: 11;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+    }
+    .menu-board h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      color: #6d4c41;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      text-align: center;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #e0cbb0;
+      padding-bottom: 10px;
+    }
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px dotted #d7ccc8;
+      gap: 12px;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item-left { flex: 1; }
+    .menu-item-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      color: #bf360c;
+      font-weight: 700;
+    }
+    .menu-item-desc {
+      font-size: 0.8rem;
+      color: #795548;
+      margin-top: 4px;
+      line-height: 1.5;
+    }
+    .menu-item-status {
+      font-size: 0.75rem;
+      color: #388e3c;
+      font-weight: 700;
+      font-style: italic;
+      white-space: nowrap;
+      padding-top: 3px;
+    }
+
+    /* WINDOWSILL / SEED POTS */
+    .windowsill {
+      display: flex;
+      justify-content: space-around;
+      gap: 16px;
+      margin-bottom: 10px;
+      position: relative;
+      z-index: 11;
+    }
+    .seed-pot {
+      flex: 1;
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .seed-pot:hover { transform: translateY(-6px); }
+    .pot-visual {
+      position: relative;
+      display: inline-block;
+      margin-bottom: 6px;
+    }
+    .pot-body {
+      width: 56px; height: 44px;
+      background: linear-gradient(160deg, #d87040, #a84b24);
+      border-radius: 4px 4px 12px 12px;
+      margin: 0 auto;
+      position: relative;
+      box-shadow: 0 6px 12px rgba(100, 40, 10, 0.2);
+      border: 1px solid #9e3d17;
+    }
+    .pot-body::before {
+      content: '';
+      position: absolute;
+      top: -5px; left: -5px; right: -5px;
+      height: 10px;
+      background: #e67e4d;
+      border-radius: 3px;
+      border: 1px solid #b8542b;
+    }
+    .pot-soil {
+      position: absolute;
+      top: 6px; left: 6px; right: 6px;
+      height: 14px;
+      background: #4e342e;
+      border-radius: 2px;
+    }
+    .sprout {
+      position: absolute;
+      top: -22px; left: 50%; transform: translateX(-50%);
+      font-size: 1.4rem;
+      animation: sway 3s ease-in-out infinite;
+      transform-origin: bottom center;
+      display: block;
+    }
+    @keyframes sway {
+      0%, 100% { transform: translateX(-50%) rotate(-3deg); }
+      50% { transform: translateX(-50%) rotate(3deg); }
+    }
+    .pot-city {
+      font-size: 0.72rem;
+      color: #8d6e63;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-top: 8px;
+      font-weight: 700;
+    }
+    .pot-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: #4e342e;
+      margin-top: 2px;
+      font-weight: 700;
+    }
+    .pot-hint {
+      font-size: 0.65rem;
+      color: #a1887f;
+      margin-top: 2px;
+      font-style: italic;
+    }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(62, 39, 35, 0.85); /* Warm dark overlay */
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+    .modal-card {
+      background: #fffcf8;
+      border: 1px solid #e0cbb0;
+      border-radius: 12px;
+      padding: 36px;
+      max-width: 480px;
+      width: 100%;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(40, 20, 10, 0.4);
+      animation: modalIn 0.25s ease;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .modal-city {
+      font-size: 0.75rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #8d6e63;
+      margin-bottom: 4px;
+      font-weight: 700;
+    }
+    .modal-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: #d84315;
+      margin-bottom: 6px;
+    }
+    .modal-planted {
+      font-size: 0.75rem;
+      color: #6d4c41;
+      font-style: italic;
+      margin-bottom: 16px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0cbb0;
+    }
+    .modal-text {
+      font-size: 0.95rem;
+      color: #5d4037;
+      line-height: 1.8;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px; right: 20px;
+      background: none;
+      border: none;
+      color: #a1887f;
+      font-size: 1.6rem;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: #d84315; }
+
+    /* FOOTER */
+    .footer-note {
+      text-align: center;
+      margin-top: 36px;
+      font-size: 0.82rem;
+      color: #6d4c41;
+      font-style: italic;
+      position: relative;
+      z-index: 2;
+      line-height: 1.8;
+    }
+
+  </style>
+</head>
+<body>
+
+<div class="rain" id="rain"></div>
+<div class="street-light"></div>
+<div class="street-light-glow"></div>
+
+<div class="cafe-wrapper">
+
+  <div class="cafe-sign">
+    <h1>Boundary Café</h1>
+    <p>Lipik · Skopje</p>
+  </div>
+
+  <div class="window-frame">
+
+    <div class="closed-sign">
+      <span class="sign-tag">
+        Closed
+        <span class="sign-sub">Back in July. Maybe August. Depends on Brussels.</span>
+      </span>
+    </div>
+
+    <div class="chalkboard">
+      <div class="chalk-label">Days since we sent it in</div>
+      <div class="chalk-days" id="dayCount">–</div>
+      <div class="chalk-message" id="chalkMessage"></div>
+      <div class="chalk-estimate">Expected results: July – August 2026</div>
+    </div>
+
+    <div class="menu-board">
+      <h2>Today's Menu</h2>
+
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="menu-item-name">The Board Game</div>
+          <div class="menu-item-desc">A3, printable, facilitator-independent. Co-created in Skopje and Lipik. Served with facilitation guide and multilingual audio introduction. 160 copies plus free download.</div>
+        </div>
+        <div class="menu-item-status">In the oven 🔥</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="menu-item-name">The Methodology</div>
+          <div class="menu-item-desc">SDL-grounded, gamification-seasoned, adult-learning-theory-aged. Free to take home via SALTO and EPALE. Pairs well with the focus group findings.</div>
+        </div>
+        <div class="menu-item-status">Resting 🫙</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="menu-item-name">The Focus Group Findings</div>
+          <div class="menu-item-desc">6 sessions, 2 countries, real people, real boundaries. Rural Lipik and urban Skopje. Distilled into scenarios and game cards built from lived experience.</div>
+        </div>
+        <div class="menu-item-status">Bottled 🍶</div>
+      </div>
+
+      <div class="menu-item">
+        <div class="menu-item-left">
+          <div class="menu-item-name">The Knowledge Exchange</div>
+          <div class="menu-item-desc">8 days, 2 cities, 30 educators. ACT, NVC, self-coaching, sustainable consent, AI tools and intergenerational facilitation. Served in Lipik and Skopje.</div>
+        </div>
+        <div class="menu-item-status">Fermenting 🌿</div>
+      </div>
+
+    </div>
+
+    <div class="windowsill">
+
+      <div class="seed-pot" onclick="openModal('ivana')">
+        <div class="pot-visual">
+          <span class="sprout">🌾</span>
+          <div class="pot-body"><div class="pot-soil"></div></div>
+        </div>
+        <div class="pot-city">TILIA</div>
+        <div class="pot-name">Ivana</div>
+        <div class="pot-hint">tap to open</div>
+      </div>
+
+      <div class="seed-pot" onclick="openModal('elizabeta')">
+        <div class="pot-visual">
+          <span class="sprout">🌿</span>
+          <div class="pot-body"><div class="pot-soil"></div></div>
+        </div>
+        <div class="pot-city">TILIA</div>
+        <div class="pot-name">Elizabeta</div>
+        <div class="pot-hint">tap to open</div>
+      </div>
+
+      <div class="seed-pot" onclick="openModal('borjan')">
+        <div class="pot-visual">
+          <span class="sprout">🌱</span>
+          <div class="pot-body"><div class="pot-soil"></div></div>
+        </div>
+        <div class="pot-city">EKOLiTiKA</div>
+        <div class="pot-name">Borjan</div>
+        <div class="pot-hint">tap to open</div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="footer-note">
+    Planted March 2026. Waiting for spring. ☕<br>
+    <span style="font-size:0.68rem; color:#3a2a15;">
+      A small-scale Erasmus+ partnership between TILIA (Croatia) and EKOLiTiKA (North Macedonia)
+    </span>
+  </div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modal" onclick="closeModalOutside(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-city" id="modal-city"></div>
+    <div class="modal-name" id="modal-name"></div>
+    <div class="modal-planted" id="modal-planted"></div>
+    <div class="modal-text" id="modal-text"></div>
+  </div>
+</div>
+
+<script>
+
+  // ── RAIN ──────────────────────────────────────────
+  const rain = document.getElementById('rain');
+  for (let i = 0; i < 60; i++) {
+    const drop = document.createElement('div');
+    drop.classList.add('raindrop');
+    drop.style.left = Math.random() * 100 + 'vw';
+    drop.style.height = (40 + Math.random() * 60) + 'px';
+    drop.style.animationDuration = (0.6 + Math.random() * 1.2) + 's';
+    drop.style.animationDelay = (Math.random() * 2) + 's';
+    drop.style.opacity = 0.3 + Math.random() * 0.4;
+    rain.appendChild(drop);
+  }
+
+  // ── CHALKBOARD COUNTER ────────────────────────────
+  const submissionDate = new Date('2026-03-05');
+
+  function updateChalkboard() {
+    const today = new Date();
+    const diff = Math.floor((today - submissionDate) / (1000 * 60 * 60 * 24));
+    document.getElementById('dayCount').textContent =
+      diff + (diff === 1 ? ' day' : ' days');
+
+    let msg;
+    if (diff <= 7)        msg = 'The coffee is still warm.';
+    else if (diff <= 30)  msg = 'We are on our second cup.';
+    else if (diff <= 60)  msg = "We've switched to cold brew.";
+    else if (diff <= 90)  msg = 'The sourdough starter is still alive. Barely.';
+    else if (diff <= 120) msg = 'Any day now. We have snacks.';
+    else                  msg = 'Brussels works in mysterious ways.';
+
+    document.getElementById('chalkMessage').textContent = msg;
+  }
+  updateChalkboard();
+
+  // ── PARTNER DATA ──────────────────────────────────
+  const partners = {
+    borjan: {
+      city: 'EKOLiTiKA',
+      name: 'Borjan Isajlovski',
+      planted: 'EKOLiTiKA · methodology, game design, digital layer',
+      text: `I planted the game. Not the idea of it – the actual structure. The mechanics, the visual identity, the digital layer, the AI tools, the SDL methodology that holds it all together. I came into this thinking about gamification and stayed for something much more personal. Boundaries kept showing up in my own life while I was writing about them for everyone else. That's how you know the project is real. I also planted the partnership – Elizabeta and I met twice in Erasmus+ spaces and somehow that was enough to know. It doesn't always work like that. I'm glad it did here.`
+    },
+    elizabeta: {
+      city: 'TILIA',
+      name: 'Elizabeta Petersdorfer',
+      planted: 'TILIA · language, rural context, partnership',
+      text: `I planted the language. The way this project talks about boundaries – not as walls but as honest, everyday conversations – came from somewhere very real in me. I wrote most of the words while sitting with my own unresolved situations, including one family boundary moment the day before a coaching session where someone told me they admired how calmly I set a limit. I didn't feel calm. But maybe that's the point of this whole thing. I also planted the rural dimension – the Lipik context, the post-war community, the intergenerational silence this project is trying to break. That part is not abstract. That part is home.`
+    },
+    ivana: {
+      city: 'TILIA',
+      name: 'Ivana Pleše',
+      planted: 'TILIA · structure, budget, coordination',
+      text: `I planted the structure. The timelines, the budget logic, the coordination framework that makes it possible for two organisations across two countries to build something coherent together. I also planted a heroic number of late nights, at least one night shift before submission and the discipline of reading every answer one more time even when my eyes said no. If this project gets funded, it will be in part because someone cared enough to count the characters, check the months and ask whether the interim report should really be in there. That was me. I also believe in what we built. That part matters more than the character count.`
+    }
+  };
+
+  function openModal(key) {
+    const p = partners[key];
+    document.getElementById('modal-city').textContent = p.city;
+    document.getElementById('modal-name').textContent = p.name;
+    document.getElementById('modal-planted').textContent = p.planted;
+    document.getElementById('modal-text').textContent = p.text;
+    document.getElementById('modal').classList.add('active');
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  function closeModalOutside(e) {
+    if (e.target.id === 'modal') closeModal();
+  }
+
+</script>
+</body>
+</html>
